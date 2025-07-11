@@ -5,6 +5,16 @@ import './App.css'
 import Home from './components/Home.jsx'
 import Register from './components/register.jsx'
 
+import {BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import Product from './components/Product.jsx'
+import Cart from './components/Cart.jsx'
+import Order from './components/Order.jsx'
+import Orders from './components/Orders.jsx'
+import Products from './components/Products.jsx'
+import Users from './components/Users.jsx'
+import Admin from './components/Admin.jsx'
+import Login from './components/Login.jsx'
+
 // function App() {
 //   const [runs, setRuns] = useState(0);
 //   const [wickets, setWickets] = useState(0);
@@ -117,15 +127,33 @@ import Register from './components/register.jsx'
 function App() {
   return (
     <div className="App-Container">
+      <BrowserRouter>
       <h1 style={{ backgroundColor: "orange" }}>MERN Frontend</h1>
       {/* <Home age={21} /> */}
-      <Register/>
+      
+      <Link to ="/">Home</Link>-<Link to="/cart">My Cart</Link>-
+      <Link to = "/order">My Order</Link>-<Link to="/admin">Admin</Link>-<Link to="/login">Login</Link>
+      
+      <Routes>
+        <Route index element={<Product/>}/>
+        <Route path="login" element={<Login />}/>
+        <Route path="register" element={<Register />}/>
+        <Route path="cart" element={<Cart />}/>
+        <Route path="order" element={<Order />}/>
+        <Route path="admin" element={<Admin />}/>
+        <Route index element ={<Users />} />
+        <Route path="orders" element={<Orders />}/>
+        <Route path="products" element={<Products />}/>
+        
+      </Routes>
+
+
+      {/* <Register/> */}
       <h3>This is footer</h3>
+
+    </BrowserRouter>
     </div>
   );
 }
 
 export default App;
-
-
-
