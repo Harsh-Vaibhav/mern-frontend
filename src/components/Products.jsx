@@ -1,7 +1,6 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState();
@@ -18,6 +17,7 @@ export default function Products() {
   const [limit, setLimit] = useState(2);
   const [editId, setEditId] = useState();
   const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchProducts = async () => {
     try {
       setError("Loading...");
@@ -31,15 +31,17 @@ export default function Products() {
       setError("Something went wrong");
     }
   };
+
   useEffect(() => {
     fetchProducts();
   }, [page]);
+
   const handleDelete = async (id) => {
     try {
       const url = `${API_URL}/api/products/${id}`;
-      const result = await axios.delete(url);
-      setError("User Deleted Successfully");
-      fetchUsers();
+      await axios.delete(url);
+      setError("Product Deleted Successfully");
+      fetchProducts();
     } catch (err) {
       console.log(err);
       setError("Something went wrong");
@@ -59,8 +61,8 @@ export default function Products() {
     }
     try {
       const url = `${API_URL}/api/products`;
-      const result = await axios.post(url, form);
-      setError("User added succesfully");
+      await axios.post(url, form);
+      setError("Product added successfully");
       fetchProducts();
       resetForm();
     } catch (err) {
@@ -72,7 +74,6 @@ export default function Products() {
   const handleEdit = (product) => {
     setEditId(product._id);
     setForm({
-      ...form,
       productName: product.productName,
       description: product.description,
       price: product.price,
@@ -89,11 +90,11 @@ export default function Products() {
     }
     try {
       const url = `${API_URL}/api/products/${editId}`;
-      const result = await axios.patch(url, form);
+      await axios.patch(url, form);
       fetchProducts();
       setEditId();
       resetForm();
-      setError("User information updated successfully");
+      setError("Product updated successfully");
     } catch (err) {
       console.log(err);
       setError("Something went wrong");
@@ -107,108 +108,105 @@ export default function Products() {
 
   const resetForm = () => {
     setForm({
-      ...form,
       productName: "",
       description: "",
       price: "",
       imgUrl: "",
     });
   };
+
   return (
-    <div>
-      <h2>Product Management</h2>
-      {error}
-      <div>
-        <form ref={frmRef}>
-          <input
-            name="productName"
-            value={form.productName}
-            type="text"
-            placeholder="Product Name"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="description"
-            value={form.description}
-            type="text"
-            placeholder="Description"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="price"
-            value={form.price}
-            type="text"
-            placeholder="Price"
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="imgUrl"
-            value={form.imgUrl}
-            type="text"
-            placeholder="Image Url"
-            onChange={handleChange}
-            required
-          />
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h2 style={{ color: "#008080", textAlign: "center" }}>Product Management</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
+      {/* Form */}
+      <form ref={frmRef} style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "15px" }}>
+        <input name="productName" value={form.productName} type="text" placeholder="Product Name" onChange={handleChange} required style={inputStyle} />
+        <input name="description" value={form.description} type="text" placeholder="Description" onChange={handleChange} required style={inputStyle} />
+        <input name="price" value={form.price} type="text" placeholder="Price" onChange={handleChange} required style={inputStyle} />
+        <input name="imgUrl" value={form.imgUrl} type="text" placeholder="Image Url" onChange={handleChange} required style={inputStyle} />
 
-          {editId ? (
-            <>
-              <button onClick={handleUpdate}>Update</button>
-              <button onClick={handleCancel}>Cancel</button>
-            </>
-          ) : (
-            <button onClick={handleAdd}>Add</button>
-          )}
-        </form>
+        {editId ? (
+          <>
+            <button onClick={handleUpdate} style={buttonStyle}>Update</button>
+            <button onClick={handleCancel} style={{ ...buttonStyle, backgroundColor: "gray" }}>Cancel</button>
+          </>
+        ) : (
+          <button onClick={handleAdd} style={buttonStyle}>Add</button>
+        )}
+      </form>
+
+      {/* Search */}
+      <div style={{ marginBottom: "15px" }}>
+        <input type="text" onChange={(e) => setSearchVal(e.target.value)} placeholder="Search by name..." style={{ ...inputStyle, width: "200px" }} />
+        <button onClick={fetchProducts} style={{ ...buttonStyle, marginLeft: "10px" }}>Search</button>
       </div>
-      <div>
-        <input type="text" onChange={(e) => setSearchVal(e.target.value)} />
-        <button onClick={fetchProducts}>Search</button>
-      </div>
-      <div>
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Image Url</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+
+      {/* Product Table */}
+      <table style={tableStyle}>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Image Url</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
           {products.map((value) => (
-            <tbody key={value._id}>
-              <tr>
-                <td>{value.productName}</td>
-                <td>{value.description}</td>
-                <td>{value.price}</td>
-                <td>{value.imgUrl}</td>
-                <td>
-                  <button onClick={() => handleEdit(value)}>Edit</button>
-                  <button onClick={() => handleDelete(value._id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
+            <tr key={value._id}>
+              <td>{value.productName}</td>
+              <td>{value.description}</td>
+              <td>{value.price}</td>
+              <td><img src={value.imgUrl} width="50" alt="product" /></td>
+              <td>
+                <button onClick={() => handleEdit(value)} style={actionBtn}>Edit</button>
+                <button onClick={() => handleDelete(value._id)} style={{ ...actionBtn, backgroundColor: "#f44336" }}>Delete</button>
+              </td>
+            </tr>
           ))}
-        </table>
-      </div>
-      <div>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Previous
-        </button>
-        Page {page} of {totalPages}
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
+        </tbody>
+      </table>
+
+      {/* Pagination */}
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <button disabled={page === 1} onClick={() => setPage(page - 1)} style={buttonStyle}>Previous</button>
+        <span style={{ margin: "0 10px" }}>Page {page} of {totalPages}</span>
+        <button disabled={page === totalPages} onClick={() => setPage(page + 1)} style={buttonStyle}>Next</button>
       </div>
     </div>
   );
 }
+
+// Inline styles
+const inputStyle = {
+  padding: "10px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+  minWidth: "150px"
+};
+
+const buttonStyle = {
+  padding: "10px 15px",
+  border: "none",
+  borderRadius: "5px",
+  backgroundColor: "#2196F3",
+  color: "white",
+  cursor: "pointer",
+};
+
+const actionBtn = {
+  ...buttonStyle,
+  margin: "2px",
+  backgroundColor: "#4CAF50"
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  textAlign: "center",
+  backgroundColor: "#f9f9f9",
+  boxShadow: "0 0 10px rgba(0,0,0,0.1)"
+};
