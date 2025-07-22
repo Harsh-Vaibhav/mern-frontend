@@ -33,13 +33,19 @@ export default function Cart() {
   }, [cart]);
 
   const placeOrder = async () => {
+    const hasValidItems = cart.some((item) => item.qty > 0);
+    if (!hasValidItems) {
+      setError("No product has been selected.");
+      return;
+    }
+
     try {
       const url = `${API_URL}/api/orders`;
       const newOrder = {
         userId: user._id,
         email: user.email,
         orderValue,
-        items: cart,
+        items: cart.filter((item) => item.qty > 0),
       };
       await axios.post(url, newOrder);
       setCart([]);
@@ -123,9 +129,17 @@ export default function Cart() {
       </ul>
       <h4>Total: ₹{orderValue}</h4>
       {user?.token ? (
-        <button style={styles.orderButton} onClick={placeOrder}>Place Order</button>
+        <button
+          style={styles.orderButton}
+          onClick={placeOrder}
+          disabled={!cart.some((item) => item.qty > 0)}
+        >
+          Place Order
+        </button>
       ) : (
-        <button style={styles.orderButton} onClick={() => Navigate("/login")}>Login to Order</button>
+        <button style={styles.orderButton} onClick={() => Navigate("/login")}>
+          Login to Order
+        </button>
       )}
     </div>
   );
