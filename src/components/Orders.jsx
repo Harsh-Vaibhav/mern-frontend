@@ -120,24 +120,34 @@ export default function Orders() {
           onClick={() => setPage(page - 1)}
           style={{
             marginRight: "1rem",
-            padding: "5px 10px",
-            backgroundColor: "#eee",
-            border: "1px solid #ccc",
-            borderRadius: "4px"
+            padding: "8px 16px",
+            backgroundColor: page === 1 ? "#ccc" : "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: page === 1 ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s ease"
           }}
         >
           Previous
         </button>
-        Page {page} of {totalPages}
+
+        <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+          Page {page} of {totalPages}
+        </span>
+
         <button
           disabled={page === totalPages}
           onClick={() => setPage(page + 1)}
           style={{
             marginLeft: "1rem",
-            padding: "5px 10px",
-            backgroundColor: "#eee",
-            border: "1px solid #ccc",
-            borderRadius: "4px"
+            padding: "8px 16px",
+            backgroundColor: page === totalPages ? "#ccc" : "#2196F3",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: page === totalPages ? "not-allowed" : "pointer",
+            transition: "background-color 0.3s ease"
           }}
         >
           Next
