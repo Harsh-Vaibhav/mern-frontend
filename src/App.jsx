@@ -15,10 +15,12 @@ import Login from "./components/Login";
 import Products from "./components/Products";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import "./App.css";
+import { useNavigate } from "react-router-dom";
 export const AppContext = createContext();
 function App() {
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState({});
+
   return (
     <div className="App-Container">
       <AppContext.Provider value={{ cart, setCart, user, setUser }}>
@@ -27,7 +29,7 @@ function App() {
           <Routes>
             <Route index element={<Product />} />
             <Route path="login" element={<Login />} />
-             <Route path="profile" element={<Profile />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="register" element={<Register />} />
             <Route path="cart" element={<Cart />} />
             <Route path="order" element={<Order />} />
