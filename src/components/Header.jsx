@@ -32,7 +32,8 @@ export default function Header() {
 
   return (
     <div style={headerStyle}>
-      <h1 style={titleStyle}>MERN Frontend</h1>
+      {/* <h1 style={titleStyle}>MERN Frontend</h1> */}
+      <h1 style={titleStyle}>Brew & Bite</h1>
       <div style={navStyle}>
         <Link to="/">Home</Link>
         <Link to="/cart">MyCart</Link>
